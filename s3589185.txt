@@ -65,6 +65,77 @@ Index.html file changes.
 </form>
 
 
+TASK 2
+
+<?php session_start(); ?>
+<html>
+    <body>
+        <?php
+            if(array_key_exists('n', $_POST)) {
+                $fib_file = 'gs://s3589185-a1-storage/fibonacci_'.$_POST['n'].'.txt';
+                $handle = fopen($fib_file, 'w');
+                $_SESSION['fib_file'] = $fib_file;
+                $f0 = 1;
+                $f1 = 1;
+                fwrite($handle, $f0.',');
+                fwrite($handle, $f1.',');
+                for($i = 2; $i < $_POST['n']; $i++) {
+                    $fib = $f0 + $f1;
+                    $f0 = $f1;
+                    $f1 = $fib;
+                    fwrite($handle, $fib);
+                    if($i == ($_POST['n'] - 1))
+                        break;
+                    else
+                        fwrite($handle, ",");
+                }
+                fclose($handle);
+            ?>
+                <form action='/sign' method='post'>
+                    <div>A: <input type='number' name='A'></div>
+                    <div>B: <input type='number' name='B'></div>
+                    <div>C: <input type='number' name='C'></div>
+                    <div><input type='submit' value='Submit'></div>
+                </form>
+            <?php 
+            }
+            else if(array_key_exists('A', $_POST) && array_key_exists('A', $_POST) && array_key_exists('A', $_POST)) {
+                $fib_file = $_SESSION['fib_file'];
+                $fibs = explode(",", file_get_contents($fib_file));
+                
+                $S = ($_POST['A'] + $_POST['B']);
+                $M = $S * $_POST['C'];
+                
+                for($x = 0; $x < count($fibs); $x++) {
+                    $M = $M + $fibs[$x];
+                }
+                $average = $M/(count($fibs)+3);
+                $average = number_format((float)$average, 2, '.', '');
+                $result_file = 'gs://s3589185-a1-storage/result.txt';
+                $handle = fopen($result_file, 'w');
+                fwrite($handle, $average);
+
+                echo "Total Sum: " . $M;
+                echo "</br>Average: " .$average;
+            }
+            else {
+            ?>
+                <form action='/sign' method='post'>
+                    <div>N: <input type='number' name='n' min='5' max='25'></div>
+                    <div><input type='submit' value='Submit'></div>
+                </form>
+            <?php } ?> 
+    </body>
+</html>
+
+runtime: php55
+api_version: 1
+
+handlers:
+- url: /.*
+  script: fibonacci.php
+
+
 TASK 3
 
 1. Find a list of all female babies born after 2008 with frequency count between 7000 and 17000. 
@@ -78,3 +149,14 @@ SELECT SUM(count) as total FROM [baby.baby_names] WHERE name LIKE 'T%' AND gende
 3. Find top 20 baby names based on frequency after year 2006.
 
 SELECT name, SUM(count) as freq FROM [baby.baby_names] WHERE year > 2006 GROUP BY name ORDER BY freq DESC LIMIT 20;
+
+
+TASK 4
+
+Music/Video Streaming sites. Music and video streaming has become the most dominant way people are watching and listerning to media now days.
+This is because cloud services have allowed companies such as Spotify and Netflix to deliver their content to users all over the world.
+By utilizing the cloud they have been able to keep a low monthly subsription and thus increase the amount of people using their services.
+
+Raspberry Pi Assistant
+For the open assignment I would like to use a raspberry pi and create an interactive assistant using googles Speech Recognition,
+Language Understanding and Text To Speech to allow a user to interact with the raspberry pi.  
