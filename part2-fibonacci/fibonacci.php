@@ -30,7 +30,7 @@
                 </form>
             <?php 
             }
-            else if(array_key_exists('A', $_POST) && array_key_exists('A', $_POST) && array_key_exists('A', $_POST)) {
+            else if(array_key_exists('A', $_POST) && array_key_exists('B', $_POST) && array_key_exists('C', $_POST)) {
                 $fib_file = $_SESSION['fib_file'];
                 $fibs = explode(",", file_get_contents($fib_file));
                 
@@ -45,7 +45,14 @@
                 $result_file = 'gs://s3589185-a1-storage/result.txt';
                 $handle = fopen($result_file, 'w');
                 fwrite($handle, $average);
-
+                ?>
+                <form action='/sign' method='post'>
+                    <div>A: <input type='number' name='A' value='<?php echo $_POST['A'];?>'></div>
+                    <div>B: <input type='number' name='B' value='<?php echo $_POST['B'];?>'></div>
+                    <div>C: <input type='number' name='C' value='<?php echo $_POST['C'];?>'></div>
+                    <div><input type='submit' value='Submit'></div>
+                </form>
+                <?php
                 echo "Total Sum: " . $M;
                 echo "</br>Average: " .$average;
             }
